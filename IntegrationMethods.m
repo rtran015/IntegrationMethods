@@ -23,6 +23,7 @@ Actual = double(int(f,a,b));
 RE_Actual = 0;
 
 %% Output
+fprintf('Integration of f = %s, interval [%i,%i], n = %i\n',f,a,b,n);
 fprintf('Method \t\t\t\t Result \t\t\t Relative Error \t \n')
 fprintf('Actual \t\t\t\t %.4f \t\t\t %.4f%% \n', Actual, RE_Actual);
 
