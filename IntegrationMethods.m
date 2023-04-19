@@ -12,16 +12,26 @@ function [out] = IntegrationMethods(a,b,f,n)
 %% initial values for testing
 % a = -1; b = 1; n = 100; h = (b-a)/n; xi = (a:h:b); syms x; f = exp(1-x^3); ff = matlabFunction(f);
 
+%% Initialize variables
 if nargin < 4 || isempty(n), n = 100; end
 h = (b-a)/n;
 xi = (a:h:b);
 ff = matlabFunction(f);
-fprintf('Method \t\t\t\t Result \t\t\t Relative Error \t \n')
 
-%% Actual integration
+% Actual integration
 Actual = double(int(f,a,b));
 RE_Actual = 0;
+
+%% Output
+fprintf('Method \t\t\t\t Result \t\t\t Relative Error \t \n')
 fprintf('Actual \t\t\t\t %.4f \t\t\t %.4f%% \n', Actual, RE_Actual);
+
+% Call all functions
+Int_LE(xi,ff,Actual);
+Int_RE(xi,ff,Actual);
+Int_MP(xi,ff,Actual);
+Int_Trapz(xi,ff,Actual);
+Simpson_13(ff,h,xi,n,Actual);
 
 %% Left endpoint UDF
     function [int_LE, err_LE] = Int_LE(xi,ff,Actual)
@@ -46,8 +56,8 @@ fprintf('Actual \t\t\t\t %.4f \t\t\t %.4f%% \n', Actual, RE_Actual);
 %% Midpoint UDF
     function [int_MP, err_MP] = Int_MP(xi,ff,Actual)
         int_MP = 0;
-        for i = 2:1:n+1
-            int_MP = int_MP + h*ff(xi(i));
+        for i = 1:1:n
+            int_MP = int_MP + h*ff((xi(i)+xi(i+1))/2);
         end
         err_MP = abs((int_MP-Actual)/Actual)*100;
         fprintf('Midpoint \t\t\t %.4f \t\t\t %.4f%% \n',int_MP,err_MP)
@@ -73,13 +83,5 @@ fprintf('Actual \t\t\t\t %.4f \t\t\t %.4f%% \n', Actual, RE_Actual);
         err_simp = abs((I_simp13-Actual)/Actual)*100;
         fprintf('Simpson 1/3 \t\t %.4f \t\t\t %.4f%% \n',I_simp13,err_simp)
     end
-
-%% Call all functions
-Int_LE(xi,ff,Actual);
-Int_RE(xi,ff,Actual);
-Int_MP(xi,ff,Actual);
-Int_Trapz(xi,ff,Actual);
-Simpson_13(ff,h,xi,n,Actual);
-
 end
 
